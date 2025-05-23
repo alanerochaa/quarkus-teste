@@ -1,20 +1,17 @@
-# Usa a imagem oficial do Eclipse Temurin com JDK 21 baseada em Alpine
+# Use the Eclipse temurin alpine official image
+# https://hub.docker.com/_/eclipse-temurin
 FROM eclipse-temurin:21-jdk-alpine
 
-# Instala bash e permissões básicas necessárias para o Maven Wrapper
-RUN apk add --no-cache bash curl unzip
-
-# Define o diretório de trabalho
+# Create and change to the app directory.
 WORKDIR /app
 
-# Copia os arquivos da aplicação para o container
-COPY . .
+# Copy local code to the container image.
+COPY . ./
 
-# Garante que o Maven Wrapper seja executável
-RUN chmod +x mvnw
+# Build the app.
+RUN ./mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install
 
-# Compila a aplicação, gerando o diretório `target/quarkus-app/`
-RUN ./mvnw clean install -DskipTests -B
+EXPOSE 8080
 
-# Define o comando padrão para rodar a aplicação Quarkus
-CMD ["java", "-jar", "target/quarkus-app/quarkus-run.jar"]
+# Run the quarkus app
+CMD ["sh", "-c", "java -jar target/quarkus-app/quarkus-run.jar"]
