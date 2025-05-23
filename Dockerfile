@@ -5,11 +5,11 @@ FROM eclipse-temurin:21-jdk-alpine
 # Create and change to the app directory.
 WORKDIR /app
 
-# Copy local code to the container image
+# Copy local code to the container image.
 COPY . ./
 
 # Build the app.
 RUN ./mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install
 
 # Run the quarkus app 
-CMD ["sh", "-c", "java -jar target/quarkus-app/app/rail-response-system-1.0-SNAPSHOT.jar"]
+CMD ["sh", "-c", "java -jar target/quarkus-app/quarkus-run.jar"]
